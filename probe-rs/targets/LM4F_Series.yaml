@@ -1,0 +1,999 @@
+---
+name: LM4F Series
+manufacturer:
+  id: 23
+  cc: 0
+variants:
+  - name: LM4F110B2QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268447744
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_32
+  - name: LM4F110C4QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F110E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F110H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F111B2QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268447744
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_32
+  - name: LM4F111C4QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F111E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F111H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F112C4QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F112E5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F112H5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F112H5QD
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F120B2QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268447744
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_32
+  - name: LM4F120C4QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F120E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F120H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F121B2QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268447744
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 32768
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_32
+  - name: LM4F121C4QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F121E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F121H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F122C4QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F122E5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F122H5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F122H5QD
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F130C4QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F130E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F130H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F131C4QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F131E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F131H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F132C4QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268460032
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 65536
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_64
+  - name: LM4F132E5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F132H5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F132H5QD
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F210E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F210H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F211E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F211H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F212E5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F212H5BB
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F212H5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F212H5QD
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F230E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F230H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F231E5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F231H5QR
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F232E5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 131072
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_128
+  - name: LM4F232H5BB
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F232H5QC
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+  - name: LM4F232H5QD
+    part: ~
+    cores: []
+    memory_map:
+      - Ram:
+          range:
+            start: 268435456
+            end: 268468224
+          is_boot_memory: false
+          cores: []
+      - Nvm:
+          range:
+            start: 0
+            end: 262144
+          is_boot_memory: true
+          cores: []
+    flash_algorithms:
+      - lm4f_256
+flash_algorithms:
+  lm4f_32:
+    name: lm4f_32
+    description: LM4Fxxx 32kB Flash
+    default: true
+    instructions: iAo0SUhDAA0zSUAeCGAySQEggDkIYwAgcEcAIHBHL0gBIUFhLkmBYIFoSQf81MBowAcA0AEgcEeBBQzRJ0kBIkphCGAmSIAeiGCIaIAH/NTIaMAHANABIHBH8LWDBzfRyRyJCIkAHU0BI2thGktAMxtqHEzbBybQG058IwApJNDECeQBLGAG4AdGEMofQL8ZPGAAHQkfRAbkDgLRLGsALAHRACnw0Q9MLGIsauQH/NHk5yhgE2hrYKxgq2jbB/zRAB0SHQkfACnz0ehowAcA0AEg8L0yBAAAQOEPQADQD0AEAEKkAQBCpADRD0AAAAAA
+    pc_init: 1
+    pc_uninit: 27
+    pc_program_page: 91
+    pc_erase_sector: 57
+    pc_erase_all: 31
+    data_section_offset: 236
+    flash_properties:
+      address_range:
+        start: 0
+        end: 32768
+      page_size: 1024
+      erased_byte_value: 255
+      program_page_timeout: 500
+      erase_sector_timeout: 500
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  lm4f_64:
+    name: lm4f_64
+    description: LM4Fxxx 64kB Flash
+    default: true
+    instructions: iAo0SUhDAA0zSUAeCGAySQEggDkIYwAgcEcAIHBHL0gBIUFhLkmBYIFoSQf81MBowAcA0AEgcEeBBQzRJ0kBIkphCGAmSIAeiGCIaIAH/NTIaMAHANABIHBH8LWDBzfRyRyJCIkAHU0BI2thGktAMxtqHEzbBybQG058IwApJNDECeQBLGAG4AdGEMofQL8ZPGAAHQkfRAbkDgLRLGsALAHRACnw0Q9MLGIsauQH/NHk5yhgE2hrYKxgq2jbB/zRAB0SHQkfACnz0ehowAcA0AEg8L0yBAAAQOEPQADQD0AEAEKkAQBCpADRD0AAAAAA
+    pc_init: 1
+    pc_uninit: 27
+    pc_program_page: 91
+    pc_erase_sector: 57
+    pc_erase_all: 31
+    data_section_offset: 236
+    flash_properties:
+      address_range:
+        start: 0
+        end: 65536
+      page_size: 1024
+      erased_byte_value: 255
+      program_page_timeout: 500
+      erase_sector_timeout: 500
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  lm4f_128:
+    name: lm4f_128
+    description: LM4Fxxx 128kB Flash
+    default: true
+    instructions: iAo0SUhDAA0zSUAeCGAySQEggDkIYwAgcEcAIHBHL0gBIUFhLkmBYIFoSQf81MBowAcA0AEgcEeBBQzRJ0kBIkphCGAmSIAeiGCIaIAH/NTIaMAHANABIHBH8LWDBzfRyRyJCIkAHU0BI2thGktAMxtqHEzbBybQG058IwApJNDECeQBLGAG4AdGEMofQL8ZPGAAHQkfRAbkDgLRLGsALAHRACnw0Q9MLGIsauQH/NHk5yhgE2hrYKxgq2jbB/zRAB0SHQkfACnz0ehowAcA0AEg8L0yBAAAQOEPQADQD0AEAEKkAQBCpADRD0AAAAAA
+    pc_init: 1
+    pc_uninit: 27
+    pc_program_page: 91
+    pc_erase_sector: 57
+    pc_erase_all: 31
+    data_section_offset: 236
+    flash_properties:
+      address_range:
+        start: 0
+        end: 131072
+      page_size: 1024
+      erased_byte_value: 255
+      program_page_timeout: 500
+      erase_sector_timeout: 500
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []
+  lm4f_256:
+    name: lm4f_256
+    description: LM4Fxxx 256kB Flash
+    default: true
+    instructions: iAo0SUhDAA0zSUAeCGAySQEggDkIYwAgcEcAIHBHL0gBIUFhLkmBYIFoSQf81MBowAcA0AEgcEeBBQzRJ0kBIkphCGAmSIAeiGCIaIAH/NTIaMAHANABIHBH8LWDBzfRyRyJCIkAHU0BI2thGktAMxtqHEzbBybQG058IwApJNDECeQBLGAG4AdGEMofQL8ZPGAAHQkfRAbkDgLRLGsALAHRACnw0Q9MLGIsauQH/NHk5yhgE2hrYKxgq2jbB/zRAB0SHQkfACnz0ehowAcA0AEg8L0yBAAAQOEPQADQD0AEAEKkAQBCpADRD0AAAAAA
+    pc_init: 1
+    pc_uninit: 27
+    pc_program_page: 91
+    pc_erase_sector: 57
+    pc_erase_all: 31
+    data_section_offset: 236
+    flash_properties:
+      address_range:
+        start: 0
+        end: 262144
+      page_size: 1024
+      erased_byte_value: 255
+      program_page_timeout: 500
+      erase_sector_timeout: 500
+      sectors:
+        - size: 1024
+          address: 0
+    cores: []

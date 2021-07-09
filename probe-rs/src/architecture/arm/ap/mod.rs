@@ -13,6 +13,7 @@ pub use memory_ap::{
 use probe_rs_target::Core;
 
 use super::{DapAccess, Register};
+use std::fmt::Debug;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AccessPortError {
@@ -183,10 +184,16 @@ impl<T: DapAccess> ApAccess for T {
 /// Can fail silently under the hood testing an ap that doesnt exist and would require cleanup.
 pub fn access_port_is_valid<AP>(debug_port: &mut AP, access_port: GenericAp) -> bool
 where
-    AP: ApAccess,
+    AP: ApAccess + Debug,
 {
+    log::trace!(
+        "Probing if access port is valid {:?}, {:?}",
+        debug_port,
+        access_port
+    );
     let idr_result: Result<IDR, DebugProbeError> = debug_port.read_ap_register(access_port);
 
+    log::trace!("Probe result {:?}", idr_result);
     match idr_result {
         Ok(idr) => u32::from(idr) != 0,
         Err(_e) => false,
@@ -197,7 +204,7 @@ where
 /// Can fail silently under the hood testing an ap that doesnt exist and would require cleanup.
 pub(crate) fn valid_access_ports<AP>(debug_port: &mut AP) -> Vec<GenericAp>
 where
-    AP: ApAccess,
+    AP: ApAccess + Debug,
 {
     (0..=255)
         .map(GenericAp::new)
