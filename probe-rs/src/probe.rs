@@ -3,6 +3,7 @@ pub(crate) mod cmsisdap;
 pub(crate) mod ftdi;
 pub(crate) mod jlink;
 pub(crate) mod stlink;
+pub(crate) mod ti_icdi;
 
 use crate::{
     architecture::arm::{ap::AccessPort, DapAccess},
@@ -21,7 +22,8 @@ use crate::{
 use crate::{
     architecture::{
         arm::{
-            ap::memory_ap::mock::MockMemoryAp, communication_interface::ArmProbeInterface,
+            ap::memory_ap::mock::MockMemoryAp,
+            communication_interface::{ArmProbeInterface, ArmProbeNoDapInterface},
             PortType, RawDapAccess, SwoAccess,
         },
         riscv::communication_interface::RiscvCommunicationInterface,
@@ -204,6 +206,8 @@ impl Probe {
 
         list.extend(list_jlink_devices());
 
+        list.extend(ti_icdi::list_icdi_devices());
+
         list
     }
 
@@ -218,6 +222,11 @@ impl Probe {
         };
         #[cfg(feature = "ftdi")]
         match ftdi::FtdiProbe::new_from_selector(selector.clone()) {
+            Ok(link) => return Ok(Probe::from_specific_probe(link)),
+            Err(DebugProbeError::ProbeCouldNotBeCreated(ProbeCreationError::NotFound)) => {}
+            Err(e) => return Err(e),
+        };
+        match ti_icdi::IcdiProbe::new_from_selector(selector.clone()) {
             Ok(link) => return Ok(Probe::from_specific_probe(link)),
             Err(DebugProbeError::ProbeCouldNotBeCreated(ProbeCreationError::NotFound)) => {}
             Err(e) => return Err(e),
@@ -396,6 +405,27 @@ impl Probe {
         }
     }
 
+    /// Check if the probe supports the GDB remote debug protocol
+    pub fn has_arm_gdb_interface(&self) -> bool {
+        self.inner.has_arm_no_dap_interface()
+    }
+
+    /// Try to get a ArmNoDapInterface, which can
+    /// can be used to communicate with chips using the ARM architecture.
+    ///
+    /// If an error occurs while trying to connect, the probe is returned.
+    pub fn try_into_arm_no_dap_interface<'probe>(
+        self,
+    ) -> Result<Box<dyn ArmProbeNoDapInterface + 'probe>, (Self, DebugProbeError)> {
+        if !self.attached {
+            Err((self, DebugProbeError::NotAttached))
+        } else {
+            self.inner
+                .try_get_arm_gdb_interface()
+                .map_err(|(probe, err)| (Probe::from_attached_probe(probe), err))
+        }
+    }
+
     /// Check if the probe has an interface to
     /// debug RISCV chips.
     pub fn has_riscv_interface(&self) -> bool {
@@ -496,6 +526,21 @@ pub trait DebugProbe: Send + fmt::Debug {
         ))
     }
 
+    /// Check if the probe supports ARM debugging the the GDB remote protocol
+    fn has_arm_no_dap_interface(&self) -> bool {
+        false
+    }
+
+    fn try_get_arm_gdb_interface(
+        self: Box<Self>,
+    ) -> Result<Box<dyn ArmProbeNoDapInterface + 'static>, (Box<dyn DebugProbe>, DebugProbeError)>
+    {
+        Err((
+            self.into_probe(),
+            DebugProbeError::InterfaceNotAvailable("ARM GDB"),
+        ))
+    }
+
     /// Get the dedicated interface to debug RISCV chips. Ensure that the
     /// probe actually supports this by calling [DebugProbe::has_riscv_interface] first.
     fn try_get_riscv_interface(
@@ -533,6 +578,7 @@ pub trait DebugProbe: Send + fmt::Debug {
 pub enum DebugProbeType {
     CmsisDap,
     Ftdi,
+    Icdi,
     StLink,
     JLink,
 }

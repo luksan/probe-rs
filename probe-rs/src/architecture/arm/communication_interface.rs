@@ -43,6 +43,13 @@ pub trait Register: Clone + From<u32> + Into<u32> + Sized + Debug {
     const NAME: &'static str;
 }
 
+pub trait ArmProbeNoDapInterface: Debug + Send {
+    fn memory_interface(&mut self) -> Result<Memory<'_>, ProbeRsError>;
+    fn read_from_rom_table(&mut self) -> Result<Option<ArmChipInfo>, ProbeRsError>;
+    fn target_reset_deassert(&mut self) -> Result<(), ProbeRsError>;
+    fn close(self: Box<Self>) -> Probe;
+}
+
 pub trait ArmProbeInterface: DapAccess + SwoAccess + Debug + Send {
     fn memory_interface(&mut self, access_port: MemoryAp) -> Result<Memory<'_>, ProbeRsError>;
 

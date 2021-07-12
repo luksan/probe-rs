@@ -64,7 +64,13 @@ impl Target {
             }
         }
 
-        let target_arch = get_architecture_from_core(self.cores[0].core_type);
+        let target_arch = get_architecture_from_core(
+            self.cores
+                .get(0)
+                .map(|c| c.core_type)
+                .or(Some(CoreType::M4))
+                .unwrap(),
+        );
 
         assert!(
             self.cores
