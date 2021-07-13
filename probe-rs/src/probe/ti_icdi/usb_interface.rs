@@ -153,6 +153,8 @@ impl GdbRemoteInterface for IcdiUsbInterface {
         let mut byte_cnt = 0;
         response
             .get_payload()?
+            .strip_prefix(b"OK:")
+            .ok_or(DebugProbeError::Other(anyhow!("OK: missing")))?
             .iter()
             .filter_map(|&ch| {
                 if escaped {

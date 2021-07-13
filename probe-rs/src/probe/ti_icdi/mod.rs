@@ -14,14 +14,13 @@ use crate::architecture::arm::{
     ApInformation, ArmChipInfo, ArmProbeInterface, DapAccess, MemoryApInformation, SwoAccess,
     SwoConfig,
 };
-use std::time::Duration;
+use std::time::Duration; // FIXME: check timeout handling
 pub use usb_interface::list_icdi_devices;
 use usb_interface::IcdiUsbInterface;
 
 use crate::architecture::arm::memory::adi_v5_memory_interface::ArmProbe;
 use crate::probe::ti_icdi::gdb_interface::GdbRemoteInterface;
 use crate::Error as ProbeRsError;
-use std::convert::TryInto;
 
 #[derive(Debug)]
 pub struct IcdiProbe {
@@ -31,7 +30,7 @@ pub struct IcdiProbe {
 }
 
 impl IcdiProbe {
-    pub fn get_memory(&mut self) -> Memory<'_> {
+    pub fn as_memory(&mut self) -> Memory<'_> {
         Memory::new(self, MemoryAp::new(0))
     }
 }
@@ -146,9 +145,8 @@ impl ArmProbeInterface for IcdiProbe {
     }
 
     fn read_from_rom_table(&mut self) -> Result<Option<ArmChipInfo>, Error> {
-        todo!();
         let baseaddr = 0xE00FF000; // FIXME: This might only be true for Cortex-M4
-        let mut memory = self.get_memory();
+        let mut memory = self.as_memory();
         let component = Component::try_parse(&mut memory, baseaddr)
             .map_err(ProbeRsError::architecture_specific)?;
 
@@ -241,25 +239,13 @@ impl ArmProbe for &mut IcdiProbe {
     fn read_32(&mut self, _ap: MemoryAp, address: u32, data: &mut [u32]) -> Result<(), Error> {
         let u32len = data.len();
         log::trace!("read_32 address {:08x}, len {:x}", address, u32len);
-        log::trace!("read_32 pre {:?}", data);
-        // Safety: Four u8 to every u32, all values valid
-        let mut as_u8 = vec![0u8; u32len * 4];
-        //        let (_, as_u8, _) = unsafe { data.align_to_mut::<u8>() };
-        assert_eq!(as_u8.len(), u32len * 4);
-        self.device.read_mem(address, as_u8.as_mut_slice())?;
-        for (d, c) in data.iter_mut().zip(as_u8.chunks_exact(4)) {
-            *d = u32::from_le_bytes(c.try_into().unwrap());
-        }
-        log::trace!(
-            "read_32 result {:08x}, {:?}",
-            data[0],
-            data[0].to_ne_bytes()
-        );
-        return Ok(());
-        for uint in as_u8.chunks_exact_mut(4) {
-            uint.copy_from_slice(
-                &u32::from_be_bytes((uint as &[u8]).try_into().unwrap()).to_ne_bytes()[..],
-            );
+        // Safety: Four u8 to every u32, all values valid, u8 should have same or lower alignment requirements
+        let (_, as_u8, _) = unsafe { data.align_to_mut::<u8>() };
+        assert_eq!(as_u8.len(), u32len * 4); // TODO: handle the case when alignment fails for some strange reason
+        self.read_8(_ap, address, as_u8)?;
+        // convert from LE to native byte order
+        for int in data.iter_mut() {
+            *int = u32::from_le(*int);
         }
         Ok(())
     }
