@@ -6,13 +6,12 @@ use hex::FromHex;
 use crate::probe::ti_icdi::receive_buffer::ReceiveBuffer;
 use crate::DebugProbeError;
 
-pub const ICDI_MAX_PACKET_SIZE: u32 = 2048;
-pub const ICDI_MAX_RW_PACKET: u32 = (((ICDI_MAX_PACKET_SIZE - 64) / 4) * 4) / 2;
-
 pub trait GdbRemoteInterface {
     // fn open(&mut self) -> Result<(), DebugProbeError>;
     // fn close(&mut self) -> Result<(), DebugProbeError>;
     // fn idcode(&mut self) -> Result<(), DebugProbeError>;
+    fn get_max_packet_size(&mut self) -> usize;
+
     fn reset(&mut self) -> Result<(), DebugProbeError> {
         self.send_remote_command(b"hreset")?.check_cmd_result()
     }
@@ -57,7 +56,7 @@ pub trait GdbRemoteInterface {
     }
 
     fn read_mem(&mut self, mut addr: u32, data: &mut [u8]) -> Result<(), DebugProbeError> {
-        for chunk in data.chunks_mut(ICDI_MAX_RW_PACKET as usize) {
+        for chunk in data.chunks_mut(self.get_max_packet_size()) {
             self.read_mem_int(addr, chunk)?;
             addr += chunk.len() as u32;
         }
@@ -65,7 +64,7 @@ pub trait GdbRemoteInterface {
     }
 
     fn write_mem(&mut self, mut addr: u32, data: &[u8]) -> Result<(), DebugProbeError> {
-        for chunk in data.chunks(ICDI_MAX_RW_PACKET as usize) {
+        for chunk in data.chunks(self.get_max_packet_size()) {
             self.write_mem_int(addr, chunk)?;
             addr += chunk.len() as u32;
         }

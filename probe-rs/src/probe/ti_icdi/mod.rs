@@ -88,10 +88,8 @@ impl DebugProbe for IcdiProbe {
     fn attach(&mut self) -> Result<(), DebugProbeError> {
         log::debug!("attach({:?})", self.protocol);
         self.device.set_debug_speed(self.speed_setting)?;
-        self.device
-            .send_cmd(b"qSupported")
-            .and_then(|r| r.check_cmd_result())?;
-        self.device
+        self.device.q_supported()?;
+        self.device // enable extended mode
             .send_cmd(b"!")
             .and_then(|r| r.check_cmd_result())
     }

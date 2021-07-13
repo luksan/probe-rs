@@ -7,7 +7,7 @@ use std::time::Duration;
 use anyhow::{anyhow, Context};
 use rusb::{Device, DeviceDescriptor, UsbContext};
 
-use super::gdb_interface::{GdbRemoteInterface, ICDI_MAX_PACKET_SIZE};
+use super::gdb_interface::GdbRemoteInterface;
 use super::receive_buffer::ReceiveBuffer;
 
 use crate::{
@@ -67,6 +67,7 @@ fn read_serial_number<U: UsbContext>(
 pub struct IcdiUsbInterface {
     device: rusb::DeviceHandle<rusb::Context>,
     pub serial_number: String,
+    max_packet_size: usize,
 }
 
 impl Debug for IcdiUsbInterface {
@@ -111,11 +112,27 @@ impl IcdiUsbInterface {
         let interface = Self {
             device: handle,
             serial_number,
+            max_packet_size: 0x1828,
         };
 
-        // FIXME: send qSupported and probe max transfer size
-
         Ok(interface)
+    }
+
+    pub fn q_supported(&mut self) -> Result<(), DebugProbeError> {
+        let buf = self.send_cmd(b"qSupported")?;
+        let resp = buf
+            .get_payload()
+            .map(std::str::from_utf8)?
+            .map_err(|_| anyhow!("qSupported response not utf-8"))?;
+        for feature in resp.split(';') {
+            if let Some(pkt_size) = feature.strip_prefix("PacketSize=") {
+                self.max_packet_size = usize::from_str_radix(pkt_size, 16).map_err(|_| {
+                    DebugProbeError::Other(anyhow!("Failed to parse max packet size as usize"))
+                })?;
+                log::debug!("Set max packet size to {}", self.max_packet_size);
+            }
+        }
+        Ok(())
     }
 
     pub fn query_icdi_version(&mut self) -> Result<String, DebugProbeError> {
@@ -141,6 +158,10 @@ impl IcdiUsbInterface {
 }
 
 impl GdbRemoteInterface for IcdiUsbInterface {
+    fn get_max_packet_size(&mut self) -> usize {
+        self.max_packet_size
+    }
+
     fn read_mem_int(&mut self, addr: u32, data: &mut [u8]) -> Result<(), DebugProbeError> {
         let mut buf = Self::new_send_buffer(20);
         write!(&mut buf, "x{:08x},{:08x}", addr, data.len()).unwrap();
@@ -219,7 +240,7 @@ impl GdbRemoteInterface for IcdiUsbInterface {
                     log::trace!("Resending packet");
                     continue;
                 }
-                b'+' => return Ok(buf), // FIXME: openocd does extra reads
+                b'+' => return Ok(buf),
                 _ => {
                     log::trace!("Unexpected response from ICDI {:?}", buf)
                 }
