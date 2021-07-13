@@ -14,7 +14,7 @@ use crate::architecture::arm::{
     ApInformation, ArmChipInfo, ArmProbeInterface, DapAccess, MemoryApInformation, SwoAccess,
     SwoConfig,
 };
-use std::time::Duration; // FIXME: check timeout handling
+
 pub use usb_interface::list_icdi_devices;
 use usb_interface::IcdiUsbInterface;
 
@@ -27,6 +27,7 @@ pub struct IcdiProbe {
     device: IcdiUsbInterface,
     protocol: WireProtocol,
     name: String,
+    speed_setting: u8,
 }
 
 impl IcdiProbe {
@@ -49,6 +50,7 @@ impl DebugProbe for IcdiProbe {
             device,
             protocol: WireProtocol::Jtag,
             name,
+            speed_setting: 0,
         }))
     }
 
@@ -57,15 +59,35 @@ impl DebugProbe for IcdiProbe {
     }
 
     fn speed(&self) -> u32 {
-        1120 // FIXME!!
+        2000
     }
 
     fn set_speed(&mut self, speed_khz: u32) -> Result<u32, DebugProbeError> {
-        Err(DebugProbeError::UnsupportedSpeed(speed_khz))
+        /*
+        > 750 kHz -> 0 (0)
+        > 300 kHz -> 1 (1)
+        > 200 kHz -> 2 (5)
+        > 150 kHz -> 3 (10)
+        <= 150 kHz -> 4 (20)
+         */
+        if speed_khz > 6000 || speed_khz < 91 {
+            return Err(DebugProbeError::UnsupportedSpeed(speed_khz));
+        }
+        self.speed_setting = match speed_khz {
+            91..=150 => b'4',
+            151..=200 => b'3',
+            201..=300 => b'2',
+            301..=750 => b'1',
+            _ => b'0',
+        };
+        self.device.set_debug_speed(self.speed_setting)?;
+
+        Ok(speed_khz)
     }
 
     fn attach(&mut self) -> Result<(), DebugProbeError> {
         log::debug!("attach({:?})", self.protocol);
+        self.device.set_debug_speed(self.speed_setting)?;
         self.device
             .send_cmd(b"qSupported")
             .and_then(|r| r.check_cmd_result())?;
@@ -209,7 +231,7 @@ impl SwoAccess for IcdiProbe {
         Err(Error::Probe(DebugProbeError::CommandNotSupportedByProbe))
     }
 
-    fn read_swo_timeout(&mut self, _timeout: Duration) -> Result<Vec<u8>, Error> {
+    fn read_swo_timeout(&mut self, _timeout: std::time::Duration) -> Result<Vec<u8>, Error> {
         Err(Error::Probe(DebugProbeError::CommandNotSupportedByProbe))
     }
 }

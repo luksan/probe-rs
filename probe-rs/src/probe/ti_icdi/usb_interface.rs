@@ -7,8 +7,9 @@ use std::time::Duration;
 use anyhow::{anyhow, Context};
 use rusb::{Device, DeviceDescriptor, UsbContext};
 
-use crate::probe::ti_icdi::gdb_interface::{GdbRemoteInterface, ICDI_MAX_PACKET_SIZE};
-use crate::probe::ti_icdi::receive_buffer::ReceiveBuffer;
+use super::gdb_interface::{GdbRemoteInterface, ICDI_MAX_PACKET_SIZE};
+use super::receive_buffer::ReceiveBuffer;
+
 use crate::{
     DebugProbeError, DebugProbeInfo, DebugProbeSelector, DebugProbeType, ProbeCreationError,
 };
@@ -34,7 +35,7 @@ pub fn list_icdi_devices() -> Vec<DebugProbeInfo> {
                     let descr = device.device_descriptor().ok()?;
                     let serial = read_serial_number(&device, &descr);
                     Some(DebugProbeInfo::new(
-                        format!("TI-ICDI {}", "<TODO>"),
+                        "ICDI".to_string(),
                         descr.vendor_id(),
                         descr.product_id(),
                         serial,
@@ -122,29 +123,26 @@ impl IcdiUsbInterface {
         r.check_cmd_result()?;
         hex::decode(r.get_payload()?)
             .map_err(|_| DebugProbeError::Other(anyhow!("Hex decode error")))
-            .and_then(|ascii| {
+            .and_then(|mut ascii| {
+                while ascii.last() == Some(&b'\n') {
+                    ascii.pop();
+                }
                 String::from_utf8(ascii)
                     .context("ICDI version UTF-8 error")
                     .map_err(DebugProbeError::Other)
             })
     }
-}
 
-pub(super) fn write_hex(mut w: impl Write, data: &[u8]) {
-    for byte in data {
-        write!(w, "{:02x}", byte).expect("Hexify write failed");
+    pub fn set_debug_speed(&mut self, speed_setting: u8) -> Result<(), DebugProbeError> {
+        let mut rcmd = Vec::from(&b"debug speed "[..]);
+        rcmd.push(speed_setting);
+        self.send_remote_command(&*rcmd)?.check_cmd_result()
     }
-}
-
-pub(super) fn new_send_buffer(capacity: usize) -> Vec<u8> {
-    let mut b = Vec::with_capacity(capacity + 4);
-    b.push(b'$');
-    b
 }
 
 impl GdbRemoteInterface for IcdiUsbInterface {
     fn read_mem_int(&mut self, addr: u32, data: &mut [u8]) -> Result<(), DebugProbeError> {
-        let mut buf = new_send_buffer(20);
+        let mut buf = Self::new_send_buffer(20);
         write!(&mut buf, "x{:08x},{:08x}", addr, data.len()).unwrap();
         let response = self.send_packet(buf)?;
         response.check_cmd_result()?;
@@ -181,7 +179,7 @@ impl GdbRemoteInterface for IcdiUsbInterface {
     }
 
     fn write_mem_int(&mut self, addr: u32, data: &[u8]) -> Result<(), DebugProbeError> {
-        let mut buf = new_send_buffer(11 + data.len());
+        let mut buf = Self::new_send_buffer(19 + data.len());
         write!(&mut buf, "X{:08x},{:08x}:", addr, data.len()).unwrap();
         for &byte in data {
             match byte {

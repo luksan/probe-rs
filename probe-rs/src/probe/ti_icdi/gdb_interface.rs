@@ -4,8 +4,6 @@ use anyhow::{anyhow, Context};
 use hex::FromHex;
 
 use crate::probe::ti_icdi::receive_buffer::ReceiveBuffer;
-use crate::probe::ti_icdi::usb_interface;
-use crate::probe::ti_icdi::usb_interface::new_send_buffer;
 use crate::DebugProbeError;
 
 pub const ICDI_MAX_PACKET_SIZE: u32 = 2048;
@@ -54,12 +52,8 @@ pub trait GdbRemoteInterface {
 
     fn write_reg(&mut self, regsel: u32, val: u32) -> Result<(), DebugProbeError> {
         let mut buf = Vec::with_capacity(20);
-        write!(&mut buf, "P{:x}=", regsel).unwrap();
-        usb_interface::write_hex(&mut buf, &val.to_le_bytes());
-        self.send_cmd(&buf)?;
-        Ok(())
-
-        // FIXME: check response
+        write!(&mut buf, "P{:x}={:08x}", regsel, val.to_be()).unwrap();
+        self.send_cmd(&buf)?.check_cmd_result()
     }
 
     fn read_mem(&mut self, mut addr: u32, data: &mut [u8]) -> Result<(), DebugProbeError> {
@@ -83,16 +77,24 @@ pub trait GdbRemoteInterface {
     }
 
     fn send_remote_command(&mut self, cmd: &[u8]) -> Result<ReceiveBuffer, DebugProbeError> {
-        let mut buf = usb_interface::new_send_buffer(cmd.len() + 6);
+        let mut buf = Self::new_send_buffer(cmd.len() + 6);
         buf.extend_from_slice(b"qRcmd,");
-        usb_interface::write_hex(&mut buf, cmd);
+        for c in cmd {
+            write!(buf, "{:02x}", c).unwrap();
+        }
         self.send_packet(buf)
     }
 
     fn send_cmd(&mut self, cmd: &[u8]) -> Result<ReceiveBuffer, DebugProbeError> {
-        let mut buf = new_send_buffer(cmd.len());
+        let mut buf = Self::new_send_buffer(cmd.len());
         buf.extend_from_slice(cmd);
         self.send_packet(buf)
+    }
+
+    fn new_send_buffer(capacity: usize) -> Vec<u8> {
+        let mut b = Vec::with_capacity(capacity + 4);
+        b.push(b'$');
+        b
     }
 
     fn read_mem_int(&mut self, addr: u32, buf: &mut [u8]) -> Result<(), DebugProbeError>;
