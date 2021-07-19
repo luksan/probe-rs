@@ -155,10 +155,38 @@ impl IcdiUsbInterface {
         rcmd.push(speed_setting);
         self.send_remote_command(&*rcmd)?.check_cmd_result()
     }
+
+    fn receive_response(&mut self, timeout: Duration) -> Result<Vec<u8>, DebugProbeError> {
+        let mut len = 0;
+        let mut recv_buf = vec![0u8; self.get_max_packet_size()];
+        for _reads in 0..5 {
+            let slice = &mut recv_buf[len..];
+            len += self
+                .device
+                .read_bulk(ICDI_READ_ENDPOINT, slice, timeout)
+                .context("Error receiving data")?;
+            if len == 0 {
+                continue;
+            }
+            if recv_buf[0] == b'-' {
+                // NAK -> retransmission needed
+                break;
+            }
+            if len >= 4 && recv_buf[len - 4] == b'#' && recv_buf[len - 1] == 0 {
+                len -= 1; // Remove trailing NUL.
+            }
+            if len >= 3 && recv_buf[len - 3] == b'#' {
+                break;
+            }
+        }
+        recv_buf.truncate(len);
+        recv_buf.shrink_to_fit();
+        Ok(recv_buf)
+    }
 }
 
 impl GdbRemoteInterface for IcdiUsbInterface {
-    fn get_max_packet_size(&mut self) -> usize {
+    fn get_max_packet_size(&self) -> usize {
         self.max_packet_size
     }
 
@@ -231,7 +259,7 @@ impl GdbRemoteInterface for IcdiUsbInterface {
                 return Err(anyhow!("ICDI buffer wasn't sent completely.").into());
             }
 
-            let buf = ReceiveBuffer::from_bulk_receive(&mut self.device, TIMEOUT)?;
+            let buf = self.receive_response(TIMEOUT)?;
             if buf.len() < 1 {
                 return Err(anyhow!("ICDI zero length response").into());
             }
@@ -240,7 +268,7 @@ impl GdbRemoteInterface for IcdiUsbInterface {
                     log::trace!("Resending packet");
                     continue;
                 }
-                b'+' => return Ok(buf),
+                b'+' => return Ok(ReceiveBuffer::from_vec(buf)),
                 _ => {
                     log::trace!("Unexpected response from ICDI {:?}", buf)
                 }

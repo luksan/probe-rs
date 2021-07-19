@@ -10,7 +10,7 @@ pub trait GdbRemoteInterface {
     // fn open(&mut self) -> Result<(), DebugProbeError>;
     // fn close(&mut self) -> Result<(), DebugProbeError>;
     // fn idcode(&mut self) -> Result<(), DebugProbeError>;
-    fn get_max_packet_size(&mut self) -> usize;
+    fn get_max_packet_size(&self) -> usize;
 
     fn reset(&mut self) -> Result<(), DebugProbeError> {
         self.send_remote_command(b"hreset")?.check_cmd_result()

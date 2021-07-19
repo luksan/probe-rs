@@ -1,45 +1,17 @@
-use anyhow::{anyhow, bail, Context, Result};
-use rusb::{DeviceHandle, UsbContext};
+use anyhow::{anyhow, Context, Result};
 use std::fmt::Debug;
 use std::ops::Deref;
-use std::time::Duration;
 
-use crate::probe::ti_icdi::usb_interface::ICDI_READ_ENDPOINT;
 use crate::DebugProbeError;
 
 #[derive(Clone)]
 pub struct ReceiveBuffer {
-    data: Box<[u8]>,
-    len: usize,
-    decoded: bool,
+    data: Vec<u8>,
 }
 
 impl ReceiveBuffer {
-    fn new() -> Self {
-        Self {
-            data: vec![0u8; 2048].into_boxed_slice(),
-            len: 0,
-            decoded: false,
-        }
-    }
-
-    pub fn from_bulk_receive<C: UsbContext>(
-        device: &mut DeviceHandle<C>,
-        timeout: Duration,
-    ) -> Result<Self> {
-        let mut buf = Self::new();
-        let mut len = 0;
-        while len < 3 || buf.data[len - 3] != b'#' {
-            let slice = &mut buf.data[len..];
-            if slice.is_empty() {
-                bail!("Buffer couldn't hold the full response.")
-            }
-            len += device
-                .read_bulk(ICDI_READ_ENDPOINT, slice, timeout)
-                .context("Error receiving data")?;
-        }
-        buf.len = len;
-        Ok(buf)
+    pub fn from_vec(data: Vec<u8>) -> Self {
+        Self { data }
     }
 
     pub fn get_payload(&self) -> Result<&[u8], DebugProbeError> {
@@ -94,6 +66,6 @@ impl Deref for ReceiveBuffer {
     type Target = [u8];
 
     fn deref(&self) -> &Self::Target {
-        &self.data[0..self.len]
+        self.data.as_slice()
     }
 }
