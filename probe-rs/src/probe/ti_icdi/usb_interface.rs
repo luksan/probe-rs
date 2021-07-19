@@ -165,7 +165,7 @@ impl GdbRemoteInterface for IcdiUsbInterface {
     fn read_mem_int(&mut self, addr: u32, data: &mut [u8]) -> Result<(), DebugProbeError> {
         let mut buf = Self::new_send_buffer(20);
         write!(&mut buf, "x{:08x},{:08x}", addr, data.len()).unwrap();
-        let response = self.send_packet(buf)?;
+        let response = self.send_packet(&mut buf)?;
         response.check_cmd_result()?;
 
         let mut escaped = false;
@@ -211,16 +211,16 @@ impl GdbRemoteInterface for IcdiUsbInterface {
                 _ => buf.push(byte),
             }
         }
-        self.send_packet(buf)?.check_cmd_result()
+        self.send_packet(&mut buf)?.check_cmd_result()
     }
 
-    fn send_packet(&mut self, mut data: Vec<u8>) -> Result<ReceiveBuffer, DebugProbeError> {
+    fn send_packet(&mut self, data: &mut Vec<u8>) -> Result<ReceiveBuffer, DebugProbeError> {
         assert_eq!(data[0], b'$');
         let checksum = data
             .iter()
             .skip(1)
             .fold(0u8, |acc, &byte| acc.wrapping_add(byte));
-        write!(&mut data, "#{:02x}", checksum).expect("ICDI buffer write failed.");
+        write!(data, "#{:02x}", checksum).expect("ICDI buffer write failed.");
         for _retries in 0..3 {
             // log::trace!("Sending packet {:?}", data);
             let sent = self

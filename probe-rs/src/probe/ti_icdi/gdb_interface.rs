@@ -81,13 +81,13 @@ pub trait GdbRemoteInterface {
         for c in cmd {
             write!(buf, "{:02x}", c).unwrap();
         }
-        self.send_packet(buf)
+        self.send_packet(&mut buf)
     }
 
     fn send_cmd(&mut self, cmd: &[u8]) -> Result<ReceiveBuffer, DebugProbeError> {
         let mut buf = Self::new_send_buffer(cmd.len());
         buf.extend_from_slice(cmd);
-        self.send_packet(buf)
+        self.send_packet(&mut buf)
     }
 
     fn new_send_buffer(capacity: usize) -> Vec<u8> {
@@ -98,5 +98,5 @@ pub trait GdbRemoteInterface {
 
     fn read_mem_int(&mut self, addr: u32, buf: &mut [u8]) -> Result<(), DebugProbeError>;
     fn write_mem_int(&mut self, addr: u32, data: &[u8]) -> Result<(), DebugProbeError>;
-    fn send_packet(&mut self, data: Vec<u8>) -> Result<ReceiveBuffer, DebugProbeError>;
+    fn send_packet(&mut self, data: &mut Vec<u8>) -> Result<ReceiveBuffer, DebugProbeError>;
 }
