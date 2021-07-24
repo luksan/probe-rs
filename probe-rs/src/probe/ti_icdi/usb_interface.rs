@@ -119,7 +119,7 @@ impl IcdiUsbInterface {
     }
 
     pub fn q_supported(&mut self) -> Result<(), DebugProbeError> {
-        let buf = self.send_cmd(b"qSupported")?;
+        let buf = self.send_command(b"qSupported")?;
         let resp = buf
             .get_payload()
             .map(std::str::from_utf8)?
@@ -190,58 +190,6 @@ impl GdbRemoteInterface for IcdiUsbInterface {
         self.max_packet_size
     }
 
-    fn read_mem_int(&mut self, addr: u32, data: &mut [u8]) -> Result<(), DebugProbeError> {
-        let mut buf = Self::new_send_buffer(20);
-        write!(&mut buf, "x{:08x},{:08x}", addr, data.len()).unwrap();
-        let response = self.send_packet(&mut buf)?;
-        response.check_cmd_result()?;
-
-        let mut escaped = false;
-        let mut byte_cnt = 0;
-        response
-            .get_payload()?
-            .strip_prefix(b"OK:")
-            .ok_or(DebugProbeError::Other(anyhow!("OK: missing")))?
-            .iter()
-            .filter_map(|&ch| {
-                if escaped {
-                    escaped = false;
-                    Some(ch ^ 0x20)
-                } else if ch == b'}' {
-                    escaped = true;
-                    None
-                } else {
-                    Some(ch)
-                }
-            })
-            .zip(data.iter_mut())
-            .for_each(|(a, b)| {
-                byte_cnt += 1;
-                *b = a;
-            });
-        if byte_cnt == data.len() {
-            log::trace!("read_mem_int: {:?}", data);
-            Ok(())
-        } else {
-            Err(DebugProbeError::Other(anyhow!("Short read")))
-        }
-    }
-
-    fn write_mem_int(&mut self, addr: u32, data: &[u8]) -> Result<(), DebugProbeError> {
-        let mut buf = Self::new_send_buffer(19 + data.len());
-        write!(&mut buf, "X{:08x},{:08x}:", addr, data.len()).unwrap();
-        for &byte in data {
-            match byte {
-                b'$' | b'#' | b'}' | b'*' => {
-                    buf.push(b'}');
-                    buf.push(byte ^ 0x20);
-                }
-                _ => buf.push(byte),
-            }
-        }
-        self.send_packet(&mut buf)?.check_cmd_result()
-    }
-
     fn send_packet(&mut self, data: &mut Vec<u8>) -> Result<ReceiveBuffer, DebugProbeError> {
         assert_eq!(data[0], b'$');
         let checksum = data
@@ -249,8 +197,11 @@ impl GdbRemoteInterface for IcdiUsbInterface {
             .skip(1)
             .fold(0u8, |acc, &byte| acc.wrapping_add(byte));
         write!(data, "#{:02x}", checksum).expect("ICDI buffer write failed.");
+        assert!(
+            data.len() <= self.get_max_packet_size(),
+            "Tried to send too big ICDI packet."
+        );
         for _retries in 0..3 {
-            // log::trace!("Sending packet {:?}", data);
             let sent = self
                 .device
                 .write_bulk(ICDI_WRITE_ENDPOINT, &data, TIMEOUT)

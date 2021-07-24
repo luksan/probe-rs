@@ -89,9 +89,8 @@ impl DebugProbe for IcdiProbe {
         log::debug!("attach({:?})", self.protocol);
         self.device.set_debug_speed(self.speed_setting)?;
         self.device.q_supported()?;
-        self.device // enable extended mode
-            .send_cmd(b"!")
-            .and_then(|r| r.check_cmd_result())
+        // enable extended mode
+        self.device.send_command(b"!")?.check_cmd_result()
     }
 
     fn detach(&mut self) -> Result<(), DebugProbeError> {
